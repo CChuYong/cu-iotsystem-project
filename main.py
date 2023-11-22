@@ -30,7 +30,7 @@ web.initialize()
 
 
 def evaluate_next_state():
-    temp_state = temp.evaluate_next_state()
+    temp_state = temp.evaluate_state()
     return temp_state
 
 def gracefully_shutdown():
@@ -52,12 +52,12 @@ print("Initializing Modules Completed!")
 try:
     while system_active:
         if store.current_power_state == PowerState.ON:
-            GPIO.output(V220_RELAY_PIN_ID, store.current_relay_state)
+            GPIO.output(V220_RELAY_PIN_ID, store.current_relay_state.value)
             current_relay_state = evaluate_next_state()
         else:
             GPIO.output(V220_RELAY_PIN_ID, False)
         
-        print("relay=%s, power=%s, temp=%f, desired_temp=%f"%(store.current_relay_state, store.current_power_state, temp.get_current_temperature(), temp.get_desired_temp()))
+        print("relay=%s, power=%s, temp=%f, desired_temp=%f"%(store.current_relay_state, store.current_power_state, store.current_temperature, store.desired_temp))
         time.sleep(0.5) #Loop Ticker
 except KeyboardInterrupt:
     gracefully_shutdown()

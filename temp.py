@@ -3,15 +3,15 @@ from common import RelayState, PowerState, FanCoilMode
 import adafruit_dht as dht
 import time
 import threading
-import database
+import database, store
 
 temperature_pin_id = 0
 
 #TODO: SAVE STATE with Database
 
-fancoil_mode = FanCoilMode.HEATER
-desired_temperature = 20.0
-last_read_temperature = 0.0
+# fancoil_mode = FanCoilMode.HEATER
+# desired_temperature = 20.0
+# last_read_temperature = 0.0
 
 break_flag = False
 
@@ -20,8 +20,7 @@ def _handle_temp():
         time.sleep(2.5)
         current_temp = _read_current_temperature()
         if current_temp > 0.0:
-            global last_read_temperature
-            last_read_temperature = current_temp
+            store.current_temperature = current_temp
         global break_flag
         if break_flag:
             break
@@ -39,8 +38,7 @@ def initialize(pin):
     _read_current_temperature()
 
     # Restore Temperature State
-    global desired_temperature
-    desired_temperature = database.read_desired_temp()
+    store.desired_temp = database.read_desired_temp()
 
     # Start Temp Thread Loop
     global temp_thread
@@ -63,29 +61,16 @@ def _read_current_temperature():
 
 def set_desired_temp(temp):
     if temp >= 0.0 and temp <= 50.0:
-        global desired_temperature
-        desired_temperature = temp
-
-def get_desired_temp():
-    global desired_temperature
-    return desired_temperature
-
-def get_current_temperature():
-    global last_read_temperature
-    return last_read_temperature 
-
-def get_fancoil_mode():
-    global fancoil_mode
-    return fancoil_mode
+        store.desired_temperature = temp
 
 def evaluate_state():
-    if fancoil_mode == FanCoilMode.HEATER:
-        if last_read_temperature >= desired_temperature:
+    if store.fancoil_mode == FanCoilMode.HEATER:
+        if store.current_temperature >= store.desired_temp:
             return RelayState.DISABLED
         else:
             return RelayState.ENABLED
     else:
-        if last_read_temperature <= desired_temperature:
+        if store.current_temperature <= store.desired_temp:
             return RelayState.DISABLED
         else:
             return RelayState.ENABLED
