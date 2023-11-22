@@ -7,12 +7,12 @@ create_query = """CREATE TABLE IF NOT EXISTS iot_state(
     desired_temp INT NOT NULL
 )"""
 
-select_query = """SELECT * FROM iot_state WHERE device_key = """ + device_key
+select_query = """SELECT * FROM iot_state WHERE device_key = '""" + device_key + "'"
 
 def initialize():
     try:
         global connection
-        connection = pymysql.connect()
+        connection = pymysql.connect(user='root', password='12345678', database='iot')
     except pymysql as e:
         print("Database Error")
     print("Database Connected")

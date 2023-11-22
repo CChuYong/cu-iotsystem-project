@@ -1,6 +1,6 @@
 import RPi.GPIO as GPIO
 from common import RelayState, PowerState, FanCoilMode
-import Adafruit_DHT as dht
+import adafruit_dht as dht
 import time
 import threading
 import database
@@ -16,9 +16,9 @@ break_flag = False
 
 def _handle_temp():
     while True:
-        time.sleep(1)
+        time.sleep(2.5)
         current_temp = _read_current_temperature()
-        if current_temp >= 0.0:
+        if current_temp > 0.0:
             global last_read_temperature
             last_read_temperature = current_temp
         global break_flag
@@ -29,6 +29,9 @@ def _handle_temp():
 def initialize(pin):
     global temperature_pin_id
     temperature_pin_id = pin
+
+    global temp_sensor
+    temp_sensor = dht.DHT11(temperature_pin_id)
 
     #Read Temperature Once
     _read_current_temperature()
@@ -45,23 +48,29 @@ def initialize(pin):
 def shutdown():
     global break_flag
     break_flag = True
-    temp_thread.join()
 
 def _read_current_temperature():
-    h,t = dht.read_retry(dht.DHT11, temperature_pin_id)
-    if t is None or t <= 0.0:
-        print("Cannot read tempreature")
+    try:
+        t = temp_sensor.temperature
+        if t is None or t <= 0.0:
+            print("Cannot read tempreature")
+            return 0.0
+        return t
+    except:
         return 0.0
-    return t
 
 def set_desired_temp(temp):
     if temp >= 0.0 and temp <= 50.0:
         global desired_temperature
         desired_temperature = temp
-    
+
+def get_desired_temp():
+    global desired_temperature
+    return desired_temperature
+
 def get_current_temperature():
     global last_read_temperature
-    return last_read_temperature    
+    return last_read_temperature 
 
 def evaluate_state():
     if fancoil_mode == FanCoilMode.HEATER:
