@@ -8,10 +8,11 @@ import database
 temperature_pin_id = 0
 
 #TODO: SAVE STATE with Database
+
 fancoil_mode = FanCoilMode.HEATER
 desired_temperature = 20.0
-
 last_read_temperature = 0.0
+
 break_flag = False
 
 def _handle_temp():
@@ -27,6 +28,7 @@ def _handle_temp():
 
 
 def initialize(pin):
+    print("Initializing temp module...")
     global temperature_pin_id
     temperature_pin_id = pin
 
@@ -71,6 +73,10 @@ def get_desired_temp():
 def get_current_temperature():
     global last_read_temperature
     return last_read_temperature 
+
+def get_fancoil_mode():
+    global fancoil_mode
+    return fancoil_mode
 
 def evaluate_state():
     if fancoil_mode == FanCoilMode.HEATER:

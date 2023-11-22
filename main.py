@@ -1,6 +1,6 @@
 import RPi.GPIO as GPIO
 import time
-import temp, database
+import temp, database, web, store
 from common import RelayState, PowerState
 
 # SENSOR PINS
@@ -20,13 +20,14 @@ V220_RELAY_PIN_ID = 10
 GPIO.setmode(GPIO.BCM)
 GPIO.setup(V220_RELAY_PIN_ID, GPIO.OUT)
 
-current_relay_state = RelayState.DISABLED
-current_power_state = PowerState.OFF
+
 system_active = True
 
 print("Initializing Modules...")
 database.initialize()
 temp.initialize(TEMP_SENSOR_PIN_ID)
+web.initialize()
+
 
 def evaluate_next_state():
     temp_state = temp.evaluate_next_state()
@@ -38,7 +39,8 @@ def gracefully_shutdown():
     print("Gracefully Shutting Down System...")
     database.shutdown()
     temp.shutdown()
-    print("Releasing Relay Output...")
+    web.shutdown()
+    print("Releasing Relay...")
     GPIO.output(V220_RELAY_PIN_ID, False)
     time.sleep(1)
     print("Clean up GPIO...")
@@ -49,13 +51,13 @@ print("Initializing Modules Completed!")
 
 try:
     while system_active:
-        if current_power_state == PowerState.ON:
-            GPIO.output(V220_RELAY_PIN_ID, current_relay_state)
+        if store.current_power_state == PowerState.ON:
+            GPIO.output(V220_RELAY_PIN_ID, store.current_relay_state)
             current_relay_state = evaluate_next_state()
         else:
             GPIO.output(V220_RELAY_PIN_ID, False)
         
-        print("relay=%s, power=%s, temp=%f, desired_temp=%f"%(current_relay_state, current_power_state, temp.get_current_temperature(), temp.get_desired_temp()))
+        print("relay=%s, power=%s, temp=%f, desired_temp=%f"%(store.current_relay_state, store.current_power_state, temp.get_current_temperature(), temp.get_desired_temp()))
         time.sleep(0.5) #Loop Ticker
 except KeyboardInterrupt:
     gracefully_shutdown()

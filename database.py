@@ -10,6 +10,7 @@ create_query = """CREATE TABLE IF NOT EXISTS iot_state(
 select_query = """SELECT * FROM iot_state WHERE device_key = '""" + device_key + "'"
 
 def initialize():
+    print("Initializing database module..")
     try:
         global connection
         connection = pymysql.connect(user='root', password='12345678', database='iot')
