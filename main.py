@@ -1,6 +1,6 @@
 import RPi.GPIO as GPIO
 import time
-import temp, database, web, store
+import temp, database, web, store, lcd
 from common import RelayState, PowerState
 
 # SENSOR PINS
@@ -27,6 +27,7 @@ print("Initializing Modules...")
 database.initialize()
 temp.initialize(TEMP_SENSOR_PIN_ID)
 web.initialize()
+lcd.initialize()
 
 
 def evaluate_next_state():
@@ -40,6 +41,7 @@ def gracefully_shutdown():
     database.shutdown()
     temp.shutdown()
     web.shutdown()
+    lcd.shutdown()
     print("Releasing Relay...")
     GPIO.output(V220_RELAY_PIN_ID, False)
     time.sleep(1)
