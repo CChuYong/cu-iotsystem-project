@@ -41,6 +41,7 @@ def gracefully_shutdown():
     database.shutdown()
     temp.shutdown()
     web.shutdown()
+    lcd.shutdown()
     print("Releasing Relay...")
     GPIO.output(V220_RELAY_PIN_ID, False)
     time.sleep(1)
