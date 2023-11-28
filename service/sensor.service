@@ -1,0 +1,15 @@
+ [Unit]
+ Description=RealTime Sensor Monitoring & Recording Service
+ After=multi-user.target
+
+ [Service]
+ Type=idle
+ WorkingDirectory=/home/user/Desktop/monitor
+
+ ExecStart=/usr/bin/python3 -u /home/user/Desktop/monitor/sensor.py
+ StandardOutput=file:/home/user/Desktop/monitor/sensor.log
+ StandardError=file:/home/user/Desktop/monitor/sensor_error.log
+
+
+ [Install]
+ WantedBy=multi-user.target

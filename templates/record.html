@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="kr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Humidity and Temperature Records</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f4f4f4;
+            color: #333;
+            margin: 20px;
+        }
+
+        h1 {
+            color: #007bff;
+            text-align: center;
+            font-size: 40px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th, td {
+            border: 1px solid #ddd;
+            padding: 15px;
+            text-align: left;
+        }
+
+        th {
+            background-color: #f2f2f2;
+        }
+
+        .pagination {
+            display: flex;
+            justify-content: center;
+            margin-top: 20px;
+        }
+
+        .pagination a {
+            color: #007bff;
+            padding: 8px 12px; /* Adjusted button size */
+            text-decoration: none;
+            transition: background-color .3s;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            cursor: pointer;
+            border-radius: 20px; /* Added border-radius for fully rounded corners */
+        }
+
+        .pagination a:hover {
+            background-color: #0056b3;
+        }
+
+        .action-buttons {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+        }
+
+        .graph-btn,
+        .refresh-btn,
+        .index-btn,
+        .pagination a {
+            padding: 8px 12px; /* Adjusted button size */
+            cursor: pointer;
+            text-decoration: none;
+            border-radius: 20px; /* Added border-radius for fully rounded corners */
+        }
+
+        .graph-btn,
+        .refresh-btn,
+        .index-btn {
+            background-color: #007bff;
+            color: white;
+            border: none;
+            transition: background-color .3s;
+        }
+
+        .graph-btn:hover,
+        .refresh-btn:hover,
+        .index-btn:hover {
+            background-color: #0056b3;
+        }
+    </style>
+</head>
+
+<body>
+    <h1>Humidity and Temperature Records</h1>
+    <br>
+
+    <div class="action-buttons">
+        <button class="graph-btn" onclick="goToGraph()">그래프 보기</button>
+        <button class="refresh-btn" onclick="refreshPage()">새로고침</button>
+        <button class="index-btn" onclick="goToIndex()">실시간 보기</button>
+    </div>
+    <div class="pagination">
+        {% for p in pagination.pages | reverse %}
+            {% if p %}
+                {% if page == p %}
+                    <a href="?page={{ p }}" class="active">{{ p }}</a>
+                {% else %}
+                    <a href="?page={{ p }}">{{ p }}</a>
+                {% endif %}
+            {% else %}
+                <span class="ellipsis">&hellip;</span>
+            {% endif %}
+        {% endfor %}
+    </div>
+
+    <table>
+        <thead>
+            <tr>
+                <th>날짜</th>
+                <th>습도</th>
+                <th>온도</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for i in list | reverse %}
+            <tr>
+                <td>{{ i[0] }}</td>
+                <td>{{ i[1] }}</td>
+                <td>{{ i[2] }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <div class="pagination">
+        {% for p in pagination.pages | reverse %}
+            {% if p %}
+                {% if page == p %}
+                    <a href="?page={{ p }}" class="active">{{ p }}</a>
+                {% else %}
+                    <a href="?page={{ p }}">{{ p }}</a>
+                {% endif %}
+            {% else %}
+                <span class="ellipsis">&hellip;</span>
+            {% endif %}
+        {% endfor %}
+    </div>
+
+    <script>
+        function refreshPage() {
+            location.reload(true);
+        }
+
+        function goToGraph() {
+            window.location.href = "graph";
+        }
+
+        function goToIndex() {
+            window.location.href = "/";
+        }
+    </script>
+</body>
+
+</html>

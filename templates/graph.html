@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="kr">
+
+<head>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f4f4f4;
+            color: #333;
+            margin: 20px;
+        }
+
+        h1 {
+            color: #007bff;
+            text-align: center;
+            font-size: 40px;
+        }
+
+        img {
+            display: block;
+            margin: 20px auto;
+        }
+
+        .action-buttons {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+        }
+
+        .index-btn,
+        .refresh-btn,
+        .record-btn,
+        .pagination a {
+            padding: 8px 12px; /* Adjusted button size */
+            cursor: pointer;
+            text-decoration: none;
+            border-radius: 20px; /* Added border-radius for fully rounded corners */
+        }
+
+        .index-btn,
+        .refresh-btn,
+        .record-btn {
+            background-color: #007bff;
+            color: white;
+            border: none;
+            transition: background-color .3s;
+        }
+
+        .index-btn:hover,
+        .refresh-btn:hover,
+        .record-btn:hover {
+            background-color: #0056b3;
+        }
+    </style>
+</head>
+
+<body>
+    <h1>Humidity and Temperature Over Time</h1>
+
+    <img src="data:image/png;base64,{{ img_data }}" alt="Graph">
+
+    <div class="action-buttons">
+        <button class="record-btn" onclick="goToRecord()">기록 보기</button>
+        <button class="refresh-btn" onclick="refreshPage()">새로고침</button>
+        <button class="index-btn" onclick="goToIndex()">실시간 보기</button>
+    </div>
+
+    <script>
+        function refreshPage() {
+            location.reload(true);
+        }
+
+        function goToRecord() {
+            window.location.href = "record";
+        }
+
+        function goToIndex() {
+            window.location.href = "/";
+        }
+    </script>
+
+</body>
+
+</html>
