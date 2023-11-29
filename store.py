@@ -3,7 +3,7 @@ import temp
 
 current_relay_state = RelayState.DISABLED
 current_power_state = PowerState.OFF
-desired_temp = 0.0
+desired_temp = 20.0
 current_temperature = 0.0
 fancoil_mode = FanCoilMode.HEATER
 

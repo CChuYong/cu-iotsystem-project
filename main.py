@@ -7,7 +7,7 @@ from common import RelayState, PowerState
 TEMP_SENSOR_PIN_ID, IR_SENSOR_PIN_ID = 4, 18
 
 # LED/BUZZER PINS
-RED_LED_PIN_ID, BUZZER_PIN_ID = 24, 23
+RED_LED_PIN_ID, BUZZER_PIN_ID = 24, 20
 
 # LCD
 LCD_SDA_PIN_ID, LCD_SCL_PIN_ID = 2, 3
@@ -54,9 +54,11 @@ print("Initializing Modules Completed!")
 try:
     while system_active:
         if store.current_power_state == PowerState.ON:
+            GPIO.output(RED_LED_PIN_ID, True)
             GPIO.output(V220_RELAY_PIN_ID, store.current_relay_state.value)
             current_relay_state = evaluate_next_state()
         else:
+            GPIO.output(RED_LED_PIN_ID, False)
             GPIO.output(V220_RELAY_PIN_ID, False)
         
         print("relay=%s, power=%s, temp=%f, desired_temp=%f"%(store.current_relay_state, store.current_power_state, store.current_temperature, store.desired_temp))
